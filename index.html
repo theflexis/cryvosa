@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cryvosa — Yazılım Lisans Mağazası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    --bg:#0B0F17; --surface:#121826; --surface-2:#161E2E; --ink:#E9EDF3; --muted:#8B96A8;
+    --accent:#3FBF8F; --warm:#E3A06B; --border:#232C3D;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  :root[data-theme="light"]{
+    --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F4F6F8; --ink:#171D26; --muted:#5B6472;
+    --accent:#1F7A5C; --warm:#C97246; --border:#D7DBE0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+  header.site{position:sticky;top:0;padding-top:env(safe-area-inset-top,0px);background:rgba(11,15,23,0.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:20}
+  :root[data-theme="light"] header.site{background:rgba(238,240,243,0.9)}
+  .bar{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-weight:700;font-size:1.15rem;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px;cursor:pointer;background:none;border:none;color:inherit;font-family:inherit}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  nav.links{display:flex;gap:22px;font-size:0.92rem;color:var(--muted)}
+  nav.links button{background:none;border:none;font-family:inherit;font-size:0.92rem;color:var(--muted);cursor:pointer;padding:4px 0}
+  nav.links button:hover{color:var(--ink)}
+  nav.links button.active{color:var(--ink);border-bottom:2px solid var(--accent)}
+  .bar-right{display:flex;align-items:center;gap:10px}
+  .text-btn{background:none;border:none;color:var(--muted);font-family:inherit;font-size:0.9rem;cursor:pointer;padding:8px 4px}
+  .text-btn:hover{color:var(--ink)}
+  .cart-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:inherit;font-size:0.9rem;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .cart-count{background:var(--accent);color:#04140f;border-radius:99px;min-width:20px;height:20px;font-size:0.75rem;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;font-family:'JetBrains Mono',monospace;font-weight:600}
+  @media (max-width:760px){nav.links{display:none}}
+
+  main{max-width:1120px;margin:0 auto;padding:0 24px}
+  .page{display:none}
+  .page.active{display:block}
+
+  .hero{position:relative;padding:76px 0 48px;max-width:680px;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-120px;right:-160px;width:420px;height:420px;background:radial-gradient(circle,rgba(63,191,143,0.18),transparent 70%);pointer-events:none}
+  .eyebrow{color:var(--accent);font-size:0.9rem;margin:0 0 14px;font-family:'JetBrains Mono',monospace}
+  .hero h1{font-size:2.5rem;line-height:1.15;margin:0 0 16px;letter-spacing:-0.02em}
+  .hero p{color:var(--muted);font-size:1.05rem;margin:0 0 26px;max-width:520px}
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .btn-primary{background:var(--accent);color:#04140f;border:none;border-radius:8px;padding:13px 20px;font-family:inherit;font-weight:600;font-size:0.95rem;cursor:pointer}
+  .btn-ghost{background:none;border:1px solid var(--border);color:var(--ink);border-radius:8px;padding:13px 20px;font-family:inherit;font-size:0.95rem;cursor:pointer}
+
+  .page-head{padding:56px 0 32px;max-width:600px}
+  .page-head h1{font-size:2.1rem;margin:0 0 10px;letter-spacing:-0.01em}
+  .page-head p{color:var(--muted);margin:0;font-size:1rem}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:56px}
+  .stat{background:var(--surface);padding:18px 16px;text-align:left}
+  .stat b{display:block;font-size:1.4rem;font-family:'JetBrains Mono',monospace;color:var(--accent)}
+  .stat span{color:var(--muted);font-size:0.82rem}
+  @media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+  .section-head{max-width:560px;margin-bottom:28px}
+  .section-head .eyebrow{margin-bottom:8px}
+  .section-head h2{font-size:1.7rem;margin:0 0 8px;letter-spacing:-0.01em}
+  .section-head p{color:var(--muted);margin:0;font-size:0.95rem}
+
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px}
+  @media (max-width:860px){.features{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:520px){.features{grid-template-columns:1fr}}
+  .feature{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+  .feature .num{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:0.85rem;margin-bottom:10px}
+  .feature h4{margin:0 0 6px;font-size:1rem}
+  .feature p{margin:0;color:var(--muted);font-size:0.88rem}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-bottom:64px}
+  @media (max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
+  .card h3{margin:0;font-size:1.05rem}
+  .card p.desc{color:var(--muted);font-size:0.9rem;margin:0;flex-grow:1}
+  .card .meta{display:flex;justify-content:space-between;align-items:baseline;padding-top:4px;border-top:1px solid var(--border)}
+  .price{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--warm);font-size:1.05rem}
+  .seats{color:var(--muted);font-size:0.78rem}
+  .add-btn{margin-top:4px;background:var(--surface-2);color:var(--ink);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-family:inherit;font-size:0.9rem;cursor:pointer;transition:opacity .15s}
+  .add-btn:active{opacity:0.7}
+  .add-btn.added{background:var(--accent);color:#04140f;border-color:var(--accent)}
+
+  .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:64px}
+  @media (max-width:860px){.testimonials{grid-template-columns:1fr}}
+  .tcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+  .tcard p{margin:0 0 16px;font-size:0.92rem;color:var(--ink)}
+  .tperson{display:flex;align-items:center;gap:10px}
+  .tavatar{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--accent)}
+  .tname{font-size:0.88rem}
+  .trole{font-size:0.78rem;color:var(--muted)}
+
+  .about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;margin-bottom:56px;align-items:start}
+  @media (max-width:800px){.about-grid{grid-template-columns:1fr}}
+  .about-grid h2{font-size:1.5rem;margin:0 0 14px}
+  .about-grid p{color:var(--muted);font-size:0.95rem;margin:0 0 14px}
+  .values{display:flex;flex-direction:column;gap:14px}
+  .value{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+  .value h4{margin:0 0 4px;font-size:0.95rem}
+  .value p{margin:0;color:var(--muted);font-size:0.86rem}
+
+  .team{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:64px}
+  @media (max-width:760px){.team{grid-template-columns:1fr}}
+  .member{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:left}
+  .member .tavatar{width:44px;height:44px;font-size:1rem;margin-bottom:12px}
+  .member h4{margin:0 0 3px;font-size:0.98rem}
+  .member span{color:var(--muted);font-size:0.82rem}
+
+  /* cart panel */
+  .overlay{position:fixed;inset:0;background:rgba(4,6,10,0.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .panel{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);background:var(--surface);border-left:1px solid var(--border);
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+    transform:translateX(100%);transition:transform .25s ease;z-index:31;display:flex;flex-direction:column}
+  .panel.open{transform:translateX(0)}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 14px;border-bottom:1px solid var(--border)}
+  .panel-head h2{margin:0;font-size:1.1rem}
+  .close-btn{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1}
+  .panel-body{flex:1;overflow-y:auto;padding:14px 20px}
+  .line{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+  .line .info{flex:1}
+  .line .info .name{font-size:0.92rem}
+  .line .info .qty-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .qty-row button{width:24px;height:24px;border:1px solid var(--border);background:var(--surface-2);border-radius:5px;cursor:pointer;color:var(--ink)}
+  .qty-row .qty{font-family:'JetBrains Mono',monospace;font-size:0.88rem;min-width:16px;text-align:center}
+  .remove{background:none;border:none;color:var(--muted);font-size:0.8rem;cursor:pointer;text-decoration:underline;padding:0}
+  .line .linetotal{font-family:'JetBrains Mono',monospace;font-size:0.92rem;white-space:nowrap}
+  .empty-note{color:var(--muted);font-size:0.92rem;padding:30px 0;text-align:center}
+  .panel-foot{border-top:1px solid var(--border);padding:16px 20px}
+  .total-row{display:flex;justify-content:space-between;font-size:1.02rem;margin-bottom:14px}
+  .total-row .amt{font-family:'JetBrains Mono',monospace;font-weight:600}
+  .primary-btn{width:100%;background:var(--accent);color:#04140f;border:none;border-radius:8px;padding:13px;font-family:inherit;font-weight:600;font-size:0.96rem;cursor:pointer}
+  .primary-btn:disabled{opacity:0.4;cursor:not-allowed}
+  .ghost-btn{width:100%;background:none;border:1px solid var(--border);color:var(--ink);border-radius:8px;padding:11px;font-family:inherit;font-size:0.9rem;cursor:pointer;margin-top:8px}
+
+  /* checkout page */
+  .checkout-wrap{max-width:520px;margin:0 auto;padding:48px 0 80px}
+  .checkout-wrap h1{font-size:1.6rem;margin:0 0 6px}
+  .checkout-wrap .sub{color:var(--muted);font-size:0.92rem;margin:0 0 28px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px}
+  .field input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface-2);color:var(--ink);font-family:inherit;font-size:0.95rem}
+  .field input:focus,.add-btn:focus-visible,.cart-btn:focus-visible,.primary-btn:focus-visible,.ghost-btn:focus-visible,.close-btn:focus-visible,.btn-primary:focus-visible,.btn-ghost:focus-visible,nav.links button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .order-summary{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:22px 0}
+  .order-summary .row{display:flex;justify-content:space-between;font-size:0.9rem;padding:5px 0}
+  .order-summary .row.total{border-top:1px solid var(--border);margin-top:6px;padding-top:10px;font-weight:600}
+  .notice{background:rgba(227,160,107,0.1);border:1px solid var(--warm);border-radius:8px;padding:12px 14px;font-size:0.85rem;color:var(--ink);margin-bottom:22px}
+  .back-link{background:none;border:none;color:var(--muted);font-size:0.88rem;cursor:pointer;padding:0;text-decoration:underline;margin-bottom:18px}
+  .confirm{display:none;text-align:center;padding:40px 0}
+  .confirm.open{display:block}
+  .confirm .check{font-size:2.2rem;color:var(--accent);margin-bottom:10px}
+
+  footer{border-top:1px solid var(--border);margin-top:20px}
+  .foot-wrap{max-width:1120px;margin:0 auto;padding:48px 24px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
+  @media (max-width:760px){.foot-wrap{grid-template-columns:1fr;gap:24px}}
+  .foot-wrap h5{margin:0 0 12px;font-size:0.85rem;color:var(--muted);font-weight:500}
+  .foot-wrap ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+  .foot-wrap ul button{background:none;border:none;font-family:inherit;padding:0;font-size:0.9rem;color:var(--ink);cursor:pointer;text-align:left}
+  .foot-wrap ul button:hover{color:var(--accent)}
+  .foot-brand p{color:var(--muted);font-size:0.88rem;max-width:320px;margin:10px 0 0}
+  .foot-bottom{border-top:1px solid var(--border);padding:18px 24px;text-align:center;color:var(--muted);font-size:0.8rem}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="bar">
+    <button class="brand" data-route=""><span class="dot"></span>Cry<span class="mono" style="color:var(--accent)">vosa</span></button>
+    <nav class="links">
+      <button data-route="">Ana Sayfa</button>
+      <button data-route="magaza">Mağaza</button>
+      <button data-route="hakkimizda">Biz Kimiz</button>
+    </nav>
+    <div class="bar-right">
+      <button class="text-btn" id="themeToggle">Aydınlık mod</button>
+      <button class="cart-btn" id="cartBtn" aria-label="Sepeti aç">
+        Sepet <span class="cart-count mono" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ANA SAYFA -->
+  <section class="page" id="page-">
+    <div class="hero">
+      <p class="eyebrow">Dijital lisans mağazası</p>
+      <h1>Ekibinizin kullandığı yazılımlar için lisans anahtarı, saniyeler içinde.</h1>
+      <p>Geliştirici araçları ve verimlilik yazılımları için resmi lisans anahtarları. Ödeme onaylandığı anda anahtarınız e-postanıza düşer.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" data-route="magaza">Ürünleri Keşfet</button>
+        <button class="btn-ghost" data-route="hakkimizda">Biz Kimiz?</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b class="mono">9+</b><span>Dijital ürün</span></div>
+      <div class="stat"><b class="mono">1.200+</b><span>Teslim edilen lisans</span></div>
+      <div class="stat"><b class="mono">99.9%</b><span>Çalışma süresi</span></div>
+      <div class="stat"><b class="mono">7/24</b><span>Destek</span></div>
+    </div>
+
+    <div class="section-head">
+      <p class="eyebrow">01 — Güven</p>
+      <h2>Neden Cryvosa?</h2>
+      <p>Her satın alma otomatik doğrulanır, anahtarınız hesabınıza özel üretilir ve anında teslim edilir.</p>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="num mono">01</div><h4>Kaliteli lisanslar</h4><p>Her ürün için tekil üretilen anahtarlar hesabınıza özel tanımlanır.</p></div>
+      <div class="feature"><div class="num mono">02</div><h4>Anlık teslimat</h4><p>Ödeme onaylandığı saniye anahtarınız e-postanıza ve panelinize düşer.</p></div>
+      <div class="feature"><div class="num mono">03</div><h4>7/24 destek</h4><p>Kurulum veya aktivasyon sorunlarında bilet sistemiyle yanınızdayız.</p></div>
+      <div class="feature"><div class="num mono">04</div><h4>Ücretsiz güncellemeler</h4><p>Lisans süresi boyunca sürüm güncellemelerine ücretsiz erişirsiniz.</p></div>
+    </div>
+
+    <div class="section-head">
+      <p class="eyebrow">Mağaza</p>
+      <h2>Öne çıkan ürünler</h2>
+      <p>En çok tercih edilen üç lisans. Tüm ürünler için mağazaya göz atın.</p>
+    </div>
+    <div class="grid" id="featuredGrid"></div>
+
+    <div class="section-head">
+      <p class="eyebrow">Referanslar</p>
+      <h2>Müşterilerimiz ne diyor?</h2>
+    </div>
+    <div class="testimonials">
+      <div class="tcard"><p>"DevBench ile API testlerimiz çok hızlandı, anahtar 2 dakikada e-postama geldi."</p><div class="tperson"><div class="tavatar mono">E</div><div><div class="tname">Ela K.</div><div class="trole">Yazılım ekibi lideri</div></div></div></div>
+      <div class="tcard"><p>"Lisans yenileme sürecinde destek ekibi anında döndü, sorun kalmadı."</p><div class="tperson"><div class="tavatar mono">M</div><div><div class="tname">Mert Y.</div><div class="trole">Serbest geliştirici</div></div></div></div>
+      <div class="tcard"><p>"SnapLock ile ekip cihazlarını tek panelden yönetmek gerçekten rahatlattı."</p><div class="tperson"><div class="tavatar mono">S</div><div><div class="tname">Selin A.</div><div class="trole">IT sorumlusu</div></div></div></div>
+    </div>
+  </section>
+
+  <!-- MAĞAZA -->
+  <section class="page" id="page-magaza">
+    <div class="page-head">
+      <p class="eyebrow">Mağaza</p>
+      <h1>Tüm lisanslar</h1>
+      <p>Geliştirici ve verimlilik yazılımları için resmi lisans anahtarları.</p>
+    </div>
+    <div class="grid" id="fullGrid"></div>
+  </section>
+
+  <!-- BİZ KİMİZ -->
+  <section class="page" id="page-hakkimizda">
+    <div class="page-head">
+      <p class="eyebrow">Biz kimiz</p>
+      <h1>Cryvosa hakkında</h1>
+      <p>Geliştirici ekiplerin doğru yazılım lisansına güvenle ulaşmasını sağlıyoruz.</p>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <h2>Hikayemiz</h2>
+        <p>Cryvosa, küçük ve orta ölçekli yazılım ekiplerinin lisans satın alma sürecindeki karmaşayı ortadan kaldırmak için kuruldu. Her lisansı doğrudan yetkili kaynaktan temin eder, doğrulama ve teslimatı otomatikleştiririz.</p>
+        <p>Amacımız, bir lisans anahtarına ihtiyaç duyduğunuzda saatler değil, saniyeler beklemenizi sağlamak.</p>
+      </div>
+      <div class="values">
+        <div class="value"><h4>Şeffaflık</h4><p>Fiyat ve lisans koşullarını satın almadan önce net şekilde gösteririz.</p></div>
+        <div class="value"><h4>Hız</h4><p>Ödeme onayından teslimata kadar tüm süreç otomatik işler.</p></div>
+        <div class="value"><h4>Güvenilirlik</h4><p>Her anahtar tekil üretilir ve hesabınıza özel tanımlanır.</p></div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <p class="eyebrow">Ekip</p>
+      <h2>Arkasındaki ekip</h2>
+    </div>
+    <div class="team">
+      <div class="member"><div class="tavatar mono">A</div><h4>Aylin Demir</h4><span>Kurucu Ortak</span></div>
+      <div class="member"><div class="tavatar mono">B</div><h4>Barış Öztürk</h4><span>Teknik Direktör</span></div>
+      <div class="member"><div class="tavatar mono">C</div><h4>Ceren Kaya</h4><span>Müşteri Destek Lideri</span></div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section class="page" id="page-checkout">
+    <div class="checkout-wrap">
+      <button class="back-link" data-route="magaza">← Mağazaya dön</button>
+      <div id="checkoutForm">
+        <h1>Siparişi tamamla</h1>
+        <p class="sub">Bilgilerinizi girin, anahtarlarınızı bu e-posta adresine göndereceğiz.</p>
+        <div class="notice">Ödeme entegrasyonu henüz eklenmedi. Bu form sipariş bilgilerini alır; kart tahsilatı için buraya bir ödeme sağlayıcısı (ör. Stripe, iyzico, Shopier) bağlanması gerekir.</div>
+        <div class="field"><label for="fName">Ad Soyad</label><input id="fName" type="text" autocomplete="name"></div>
+        <div class="field"><label for="fEmail">E-posta</label><input id="fEmail" type="email" autocomplete="email"></div>
+        <div class="field"><label for="fCompany">Şirket (opsiyonel)</label><input id="fCompany" type="text" autocomplete="organization"></div>
+        <div class="order-summary" id="orderSummary"></div>
+        <button class="primary-btn" id="placeOrderBtn">Siparişi Tamamla</button>
+      </div>
+      <div class="confirm" id="confirmView">
+        <div class="check">✓</div>
+        <h1>Siparişiniz alındı</h1>
+        <p class="sub" id="confirmText"></p>
+        <button class="ghost-btn" data-route="">Ana sayfaya dön</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="cartPanel" aria-label="Sepet">
+  <div class="panel-head">
+    <h2>Sepetiniz</h2>
+    <button class="close-btn" id="closeCart" aria-label="Kapat">×</button>
+  </div>
+  <div class="panel-body" id="cartBody"></div>
+  <div class="panel-foot" id="cartFoot"></div>
+</aside>
+
+<footer>
+  <div class="foot-wrap">
+    <div class="foot-brand">
+      <div class="brand" style="cursor:default"><span class="dot"></span>Cry<span class="mono" style="color:var(--accent)">vosa</span></div>
+      <p>Geliştirici ve verimlilik yazılımları için güvenli lisans anahtarı mağazası. Anında teslimat, 7/24 destek.</p>
+    </div>
+    <div><h5>Platform</h5><ul><li><button data-route="">Ana Sayfa</button></li><li><button data-route="magaza">Mağaza</button></li><li><button data-route="hakkimizda">Biz Kimiz</button></li></ul></div>
+    <div><h5>Yasal</h5><ul><li><button type="button">Gizlilik Politikası</button></li><li><button type="button">Kullanım Şartları</button></li><li><button type="button">İade Politikası</button></li></ul></div>
+  </div>
+  <div class="foot-bottom">© 2026 Cryvosa — demo mağaza altyapısı. Ürünler örnek amaçlıdır.</div>
+</footer>
+
+<script>
+const PRODUCTS = [
+  {id:'flowpilot', name:'FlowPilot Pro', desc:'Otomasyon ve iş akışı motoru, tek kullanıcı lisansı.', price:49, seats:'1 kullanıcı / yıllık'},
+  {id:'devbench', name:'DevBench Suite', desc:'API test, mock sunucu ve log izleme araç seti.', price:89, seats:'1 kullanıcı / yıllık'},
+  {id:'snaplock', name:'SnapLock Security', desc:'Uç nokta şifreleme ve erişim denetimi lisansı.', price:129, seats:'5 cihaza kadar'},
+  {id:'gridsync', name:'GridSync', desc:'Ekipler arası dosya senkronizasyon sunucusu.', price:69, seats:'1 sunucu / yıllık'},
+  {id:'pixelforge', name:'PixelForge Studio', desc:'Vektör ve raster tasarım uygulaması, ticari lisans.', price:79, seats:'1 kullanıcı / ömür boyu'},
+  {id:'querybird', name:'QueryBird', desc:'SQL istemcisi ve şema görselleştirme aracı.', price:39, seats:'1 kullanıcı / yıllık'},
+  {id:'tasknest', name:'TaskNest Teams', desc:'Küçük ekipler için proje ve görev yönetimi.', price:59, seats:'10 kullanıcıya kadar'},
+  {id:'logscope', name:'LogScope', desc:'Gerçek zamanlı sunucu log analiz paneli.', price:99, seats:'1 sunucu / yıllık'},
+  {id:'formkit', name:'FormKit Builder', desc:'Form ve anket oluşturma, kod eklentisi ile.', price:35, seats:'1 kullanıcı / yıllık'},
+];
+const FEATURED_IDS = ['flowpilot','devbench','snaplock'];
+
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem('cryvosa_cart') || '{}'); } catch(e) { cart = {}; }
+function saveCart(){ try { localStorage.setItem('cryvosa_cart', JSON.stringify(cart)); } catch(e) {} }
+function money(n){ return '$' + n.toFixed(2); }
+
+function cardHTML(p){
+  return `
+    <div class="card">
+      <h3>${p.name}</h3>
+      <p class="desc">${p.desc}</p>
+      <div class="meta"><span class="price mono">${money(p.price)}</span><span class="seats">${p.seats}</span></div>
+      <button class="add-btn" data-id="${p.id}">Sepete Ekle</button>
+    </div>`;
+}
+function renderGrids(){
+  document.getElementById('featuredGrid').innerHTML = PRODUCTS.filter(p=>FEATURED_IDS.includes(p.id)).map(cardHTML).join('');
+  document.getElementById('fullGrid').innerHTML = PRODUCTS.map(cardHTML).join('');
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      cart[id] = (cart[id] || 0) + 1;
+      saveCart(); renderCart();
+      btn.textContent = 'Eklendi ✓'; btn.classList.add('added');
+      setTimeout(() => { btn.textContent = 'Sepete Ekle'; btn.classList.remove('added'); }, 900);
+    });
+  });
+}
+
+function cartEntries(){
+  return Object.entries(cart).filter(([,q]) => q > 0).map(([id,q]) => ({...PRODUCTS.find(p=>p.id===id), qty:q}));
+}
+function cartTotal(){ return cartEntries().reduce((sum, item) => sum + item.price * item.qty, 0); }
+
+function renderCart(){
+  const entries = cartEntries();
+  const count = entries.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cartCount').textContent = count;
+  const body = document.getElementById('cartBody');
+  if (entries.length === 0){
+    body.innerHTML = '<div class="empty-note">Sepetiniz boş. Bir ürün ekleyin.</div>';
+  } else {
+    body.innerHTML = entries.map(item => `
+      <div class="line" data-id="${item.id}">
+        <div class="info">
+          <div class="name">${item.name}</div>
+          <div class="qty-row">
+            <button class="dec" aria-label="Azalt">−</button>
+            <span class="qty mono">${item.qty}</span>
+            <button class="inc" aria-label="Artır">+</button>
+            <button class="remove">Kaldır</button>
+          </div>
+        </div>
+        <div class="linetotal">${money(item.price * item.qty)}</div>
+      </div>
+    `).join('');
+    body.querySelectorAll('.line').forEach(line => {
+      const id = line.dataset.id;
+      line.querySelector('.inc').addEventListener('click', () => { cart[id]++; saveCart(); renderCart(); });
+      line.querySelector('.dec').addEventListener('click', () => { cart[id] = Math.max(0, cart[id]-1); saveCart(); renderCart(); });
+      line.querySelector('.remove').addEventListener('click', () => { delete cart[id]; saveCart(); renderCart(); });
+    });
+  }
+  const foot = document.getElementById('cartFoot');
+  const total = cartTotal();
+  foot.innerHTML = `
+    <div class="total-row"><span>Toplam</span><span class="amt mono">${money(total)}</span></div>
+    <button class="primary-btn" id="checkoutBtn" ${entries.length===0?'disabled':''}>Ödemeye Geç</button>
+  `;
+  const cb = document.getElementById('checkoutBtn');
+  if (cb) cb.addEventListener('click', () => { closeCart(); goTo('checkout'); });
+}
+
+function openCart(){ document.getElementById('overlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); }
+function closeCart(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); }
+document.getElementById('cartBtn').addEventListener('click', openCart);
+document.getElementById('closeCart').addEventListener('click', closeCart);
+document.getElementById('overlay').addEventListener('click', closeCart);
+
+function renderOrderSummary(){
+  const entries = cartEntries();
+  const total = cartTotal();
+  document.getElementById('orderSummary').innerHTML =
+    entries.map(i => `<div class="row"><span>${i.name} × ${i.qty}</span><span class="mono">${money(i.price*i.qty)}</span></div>`).join('')
+    + `<div class="row total"><span>Toplam</span><span class="mono">${money(total)}</span></div>`;
+}
+document.getElementById('placeOrderBtn').addEventListener('click', () => {
+  const name = document.getElementById('fName').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  if (!name || !email){ alert('Lütfen ad soyad ve e-posta girin.'); return; }
+  document.getElementById('confirmText').textContent =
+    `Sipariş özeti ${email} adresine gönderilecek. Ödeme sağlayıcısı bağlandığında anahtarlarınız otomatik iletilecek.`;
+  document.getElementById('checkoutForm').style.display = 'none';
+  document.getElementById('confirmView').classList.add('open');
+  cart = {}; saveCart(); renderCart();
+});
+
+/* ---- routing (sayfa yönlendirme) ---- */
+const ROUTES = ['', 'magaza', 'hakkimizda', 'checkout'];
+function goTo(route){
+  if (!ROUTES.includes(route)) route = '';
+  location.hash = '/' + route;
+}
+function renderRoute(){
+  let route = location.hash.replace('#','').replace(/^\//,'');
+  if (!ROUTES.includes(route)) route = '';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + route).classList.add('active');
+  document.querySelectorAll('nav.links button').forEach(b => {
+    b.classList.toggle('active', b.dataset.route === route);
+  });
+  if (route === 'checkout'){
+    document.getElementById('checkoutForm').style.display = 'block';
+    document.getElementById('confirmView').classList.remove('open');
+    renderOrderSummary();
+  }
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-route]').forEach(el => {
+  el.addEventListener('click', () => goTo(el.dataset.route));
+});
+window.addEventListener('hashchange', renderRoute);
+
+const themeBtn = document.getElementById('themeToggle');
+themeBtn.addEventListener('click', () => {
+  const root = document.documentElement;
+  const isLight = root.getAttribute('data-theme') === 'light';
+  if (isLight){ root.removeAttribute('data-theme'); themeBtn.textContent = 'Aydınlık mod'; }
+  else { root.setAttribute('data-theme','light'); themeBtn.textContent = 'Koyu mod'; }
+});
+
+renderGrids();
+renderCart();
+renderRoute();
+</script>
+</body>
+</html>
