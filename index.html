@@ -343,15 +343,15 @@ const FEATURED_IDS = ['flowpilot','devbench','snaplock'];
 let cart = {};
 try { cart = JSON.parse(localStorage.getItem('cryvosa_cart') || '{}'); } catch(e) { cart = {}; }
 function saveCart(){ try { localStorage.setItem('cryvosa_cart', JSON.stringify(cart)); } catch(e) {} }
-function money(n){ return '$' + n.toFixed(2); }
+function money(n){ return '₺' + n.toFixed(2); }
 
 function cardHTML(p){
   return `
     <div class="card">
-      <h3>${p.name}</h3>
-      <p class="desc">${p.desc}</p>
-      <div class="meta"><span class="price mono">${money(p.price)}</span><span class="seats">${p.seats}</span></div>
-      <button class="add-btn" data-id="${p.id}">Sepete Ekle</button>
+      <h3>₺{p.name}</h3>
+      <p class="desc">₺{p.desc}</p>
+      <div class="meta"><span class="price mono">₺{money(p.price)}</span><span class="seats">₺{p.seats}</span></div>
+      <button class="add-btn" data-id="₺{p.id}">Sepete Ekle</button>
     </div>`;
 }
 function renderGrids(){
@@ -382,17 +382,17 @@ function renderCart(){
     body.innerHTML = '<div class="empty-note">Sepetiniz boş. Bir ürün ekleyin.</div>';
   } else {
     body.innerHTML = entries.map(item => `
-      <div class="line" data-id="${item.id}">
+      <div class="line" data-id="₺{item.id}">
         <div class="info">
-          <div class="name">${item.name}</div>
+          <div class="name">₺{item.name}</div>
           <div class="qty-row">
             <button class="dec" aria-label="Azalt">−</button>
-            <span class="qty mono">${item.qty}</span>
+            <span class="qty mono">₺{item.qty}</span>
             <button class="inc" aria-label="Artır">+</button>
             <button class="remove">Kaldır</button>
           </div>
         </div>
-        <div class="linetotal">${money(item.price * item.qty)}</div>
+        <div class="linetotal">₺{money(item.price * item.qty)}</div>
       </div>
     `).join('');
     body.querySelectorAll('.line').forEach(line => {
@@ -405,8 +405,8 @@ function renderCart(){
   const foot = document.getElementById('cartFoot');
   const total = cartTotal();
   foot.innerHTML = `
-    <div class="total-row"><span>Toplam</span><span class="amt mono">${money(total)}</span></div>
-    <button class="primary-btn" id="checkoutBtn" ${entries.length===0?'disabled':''}>Ödemeye Geç</button>
+    <div class="total-row"><span>Toplam</span><span class="amt mono">₺{money(total)}</span></div>
+    <button class="primary-btn" id="checkoutBtn" ₺{entries.length===0?'disabled':''}>Ödemeye Geç</button>
   `;
   const cb = document.getElementById('checkoutBtn');
   if (cb) cb.addEventListener('click', () => { closeCart(); goTo('checkout'); });
@@ -422,15 +422,15 @@ function renderOrderSummary(){
   const entries = cartEntries();
   const total = cartTotal();
   document.getElementById('orderSummary').innerHTML =
-    entries.map(i => `<div class="row"><span>${i.name} × ${i.qty}</span><span class="mono">${money(i.price*i.qty)}</span></div>`).join('')
-    + `<div class="row total"><span>Toplam</span><span class="mono">${money(total)}</span></div>`;
+    entries.map(i => `<div class="row"><span>₺{i.name} × ₺{i.qty}</span><span class="mono">₺{money(i.price*i.qty)}</span></div>`).join('')
+    + `<div class="row total"><span>Toplam</span><span class="mono">₺{money(total)}</span></div>`;
 }
 document.getElementById('placeOrderBtn').addEventListener('click', () => {
   const name = document.getElementById('fName').value.trim();
   const email = document.getElementById('fEmail').value.trim();
   if (!name || !email){ alert('Lütfen ad soyad ve e-posta girin.'); return; }
   document.getElementById('confirmText').textContent =
-    `Sipariş özeti ${email} adresine gönderilecek. Ödeme sağlayıcısı bağlandığında anahtarlarınız otomatik iletilecek.`;
+    `Sipariş özeti ₺{email} adresine gönderilecek. Ödeme sağlayıcısı bağlandığında anahtarlarınız otomatik iletilecek.`;
   document.getElementById('checkoutForm').style.display = 'none';
   document.getElementById('confirmView').classList.add('open');
   cart = {}; saveCart(); renderCart();
